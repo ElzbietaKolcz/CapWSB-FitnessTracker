@@ -1,0 +1,14 @@
+pl.wsb
+pl.wsb.fitnesstracker
+pl.wsb.fitnesstracker.event
+pl.wsb.fitnesstracker.event.api
+pl.wsb.fitnesstracker.exception.api
+pl.wsb.fitnesstracker.healthmetrics
+pl.wsb.fitnesstracker.livecoding.bean
+pl.wsb.fitnesstracker.livecoding.ioc
+pl.wsb.fitnesstracker.mail.api
+pl.wsb.fitnesstracker.statistics.api
+pl.wsb.fitnesstracker.training.api
+pl.wsb.fitnesstracker.training.internal
+pl.wsb.fitnesstracker.user.api
+pl.wsb.fitnesstracker.workoutsession

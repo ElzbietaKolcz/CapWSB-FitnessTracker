@@ -12,6 +12,6 @@ public interface UserService {
      * @param user The user to be created
      * @return The created user
      */
-    User createUser(User user);
+    User createUser(UserDto user);
 
 }

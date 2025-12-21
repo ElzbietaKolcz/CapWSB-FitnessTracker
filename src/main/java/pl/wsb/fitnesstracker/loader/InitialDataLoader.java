@@ -51,11 +51,11 @@ class InitialDataLoader {
         log.info("Finished loading initial data");
     }
 
-    private User generateUser(String name, String lastName, int age) {
-        User user = new User(name,
+    private User generateUser(String firstName, String lastName, int age) {
+        User user = new User(firstName,
                 lastName,
                 now().minusYears(age),
-                "%s.%s@domain.com".formatted(name, lastName));
+                "%s.%s@domain.com".formatted(firstName, lastName));
         return userRepository.save(user);
     }
 

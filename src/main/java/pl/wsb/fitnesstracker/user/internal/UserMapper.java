@@ -21,4 +21,15 @@ class UserMapper {
                 user.getFirstName(),
                 user.getLastName());
     }
+
+    User toEntity(UserDto userDto) {
+        User user  = new User();
+//        user.setId(userDto.id());
+        user.setBirthdate(userDto.birthdate());
+        user.setEmail(userDto.email());
+        user.setFirstName(userDto.firstName());
+        user.setLastName(userDto.lastName());
+        // mapping
+        return user;
+    }
 }
