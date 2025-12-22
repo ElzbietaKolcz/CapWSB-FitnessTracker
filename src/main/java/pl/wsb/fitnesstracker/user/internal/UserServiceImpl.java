@@ -2,7 +2,9 @@ package pl.wsb.fitnesstracker.user.internal;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import pl.wsb.fitnesstracker.user.api.User;
 import pl.wsb.fitnesstracker.user.api.UserDto;
 import pl.wsb.fitnesstracker.user.api.UserProvider;
@@ -10,6 +12,7 @@ import pl.wsb.fitnesstracker.user.api.UserService;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -30,18 +33,22 @@ class UserServiceImpl implements UserService, UserProvider {
      * @return the persisted {@link User} with a generated identifier
      * @throws IllegalArgumentException if the user already has an ID assigned
      */
+    @ResponseStatus(HttpStatus.CREATED)
     @Override
     public User createUser(final UserDto user) {
-        //userDto
         log.info("Creating User {}", user);
-        Optional<User> optionalUser = userRepository.findById(user.id());
-        if (!optionalUser.isPresent()) {
-            throw new IllegalArgumentException("User has already DB ID, update is not permitted!");
+
+        if (user.id() != null) {
+            Optional<User> optionalUser = userRepository.findById(user.id());
+            if (!optionalUser.isPresent()) {
+                throw new IllegalArgumentException( "User has already DB ID, update is not permitted!");
+            }
         }
+
         User userEntity = userMapper.toEntity(user);
-        // usertdto -> user
         return userRepository.save(userEntity);
     }
+
 
     /**
      * Retrieves a user by its unique identifier.
@@ -92,6 +99,32 @@ class UserServiceImpl implements UserService, UserProvider {
     public void deleteUser(Long userId) {
         userRepository.deleteById(userId);
     }
+
+
+    public User updateUser(UserDto user) {
+        log.info("Update User {}", user);
+
+        if (user.id() != null) {
+            Optional<User> optionalUser = userRepository.findById(user.id());
+            if (!optionalUser.isPresent()) {
+                throw new IllegalArgumentException("User not exist!");
+            }
+
+            User existingUser = optionalUser.get();
+
+            existingUser.setFirstName(user.firstName());
+            existingUser.setLastName(user.lastName());
+            existingUser.setEmail(user.email());
+            existingUser.setBirthdate(user.birthdate());
+
+            return userRepository.save(existingUser);
+        }
+
+        User newUser = userMapper.toEntity(user);
+        return userRepository.save(newUser);
+    }
+
+
 
 
 }

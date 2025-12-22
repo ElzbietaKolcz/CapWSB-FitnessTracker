@@ -107,6 +107,20 @@ class UserController {
         return userMapper.toDto(savedUser);
     }
 
+    @PutMapping("/{userId}")
+    @ResponseStatus(HttpStatus.OK)
+    public UserDto updateUser(@PathVariable Long userId, @RequestBody UserDto userDto) {
+        UserDto dtoWithId = new UserDto(
+                userId,
+                userDto.firstName(),
+                userDto.lastName(),
+                userDto.birthdate(),
+                userDto.email()
+        );
+
+        User savedUser = userService.updateUser(dtoWithId);
+        return userMapper.toDto(savedUser);
+    }
 
 }
 
