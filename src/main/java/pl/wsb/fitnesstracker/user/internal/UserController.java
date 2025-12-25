@@ -39,7 +39,8 @@ class UserController {
      * Retrieves a simplified representation of all users.
      * <p>
      * This endpoint returns a reduced set of user data intended for
-     * lightweight use cases (e.g. dropdowns, lists).
+     * lightweight use cases (e.g., dropdowns, lists).
+     * </p>
      *
      * @return a list of {@link UserSimpleDto} containing basic user information
      */
@@ -56,6 +57,7 @@ class UserController {
      *
      * @param id the unique identifier of the user
      * @return a {@link UserDto} representing the requested user
+     * @throws NoSuchElementException if no user is found with the given ID
      */
     @GetMapping("/{id}")
     public UserDto getUserById(@PathVariable Long id) {
@@ -93,13 +95,25 @@ class UserController {
                 .toList();
     }
 
+    /**
+     * Deletes a user by its unique identifier.
+     *
+     * @param userId the ID of the user to delete
+     * @responseStatus 204 (NO_CONTENT) if the deletion was successful
+     */
     @DeleteMapping("/{userId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteUser(@PathVariable Long userId) {
         userService.deleteUser(userId);
     }
 
-
+    /**
+     * Creates a new user with the provided details.
+     *
+     * @param userDto the user data to create
+     * @return a {@link UserDto} representing the newly created user
+     * @responseStatus 201 (CREATED) if the user was successfully created
+     */
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public UserDto createUser(@RequestBody UserDto userDto) {
@@ -107,6 +121,14 @@ class UserController {
         return userMapper.toDto(savedUser);
     }
 
+    /**
+     * Updates an existing user with the provided details.
+     *
+     * @param userId  the ID of the user to update
+     * @param userDto the new user data
+     * @return a {@link UserDto} representing the updated user
+     * @responseStatus 200 (OK) if the update was successful
+     */
     @PutMapping("/{userId}")
     @ResponseStatus(HttpStatus.OK)
     public UserDto updateUser(@PathVariable Long userId, @RequestBody UserDto userDto) {
@@ -121,8 +143,4 @@ class UserController {
         User savedUser = userService.updateUser(dtoWithId);
         return userMapper.toDto(savedUser);
     }
-
 }
-
-
-

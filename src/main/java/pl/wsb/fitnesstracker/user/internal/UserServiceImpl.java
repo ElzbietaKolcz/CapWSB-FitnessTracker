@@ -19,7 +19,6 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Slf4j
 class UserServiceImpl implements UserService, UserProvider {
-
     private final UserMapper userMapper;
     private final UserRepository userRepository;
 
@@ -41,14 +40,13 @@ class UserServiceImpl implements UserService, UserProvider {
         if (user.id() != null) {
             Optional<User> optionalUser = userRepository.findById(user.id());
             if (!optionalUser.isPresent()) {
-                throw new IllegalArgumentException( "User has already DB ID, update is not permitted!");
+                throw new IllegalArgumentException("User has already DB ID, update is not permitted!");
             }
         }
 
         User userEntity = userMapper.toEntity(user);
         return userRepository.save(userEntity);
     }
-
 
     /**
      * Retrieves a user by its unique identifier.
@@ -77,8 +75,7 @@ class UserServiceImpl implements UserService, UserProvider {
     /**
      * Retrieves all users stored in the system.
      *
-     * @return a list of all {@link User} entities;
-     *         the list may be empty if no users exist
+     * @return a list of all {@link User} entities; may be empty if no users exist
      */
     @Override
     public List<User> findAllUsers() {
@@ -89,18 +86,32 @@ class UserServiceImpl implements UserService, UserProvider {
      * Retrieves users whose birth date is earlier than the given date.
      *
      * @param date the reference date used to filter users by age
-     * @return a list of {@link User} entities older than the given date;
-     *         the list may be empty if no matching users are found
+     * @return a list of {@link User} entities older than the given date; may be empty if no matching users are found
      */
     public List<User> getUsersOlderThan(LocalDate date) {
         return userRepository.findAllByBirthdateBefore(date);
     }
 
+    /**
+     * Deletes a user by its unique identifier.
+     *
+     * @param userId the ID of the user to delete
+     */
     public void deleteUser(Long userId) {
         userRepository.deleteById(userId);
     }
 
-
+    /**
+     * Updates an existing user with the provided data.
+     * <p>
+     * If the user ID exists, the existing user is updated. If the ID is missing, a new user is created.
+     * Throws {@link IllegalArgumentException} if the provided ID does not exist in the database.
+     * </p>
+     *
+     * @param user the {@link UserDto} containing updated user data
+     * @return the updated or newly created {@link User} entity
+     * @throws IllegalArgumentException if the user ID does not exist in the database
+     */
     public User updateUser(UserDto user) {
         log.info("Update User {}", user);
 
@@ -111,7 +122,6 @@ class UserServiceImpl implements UserService, UserProvider {
             }
 
             User existingUser = optionalUser.get();
-
             existingUser.setFirstName(user.firstName());
             existingUser.setLastName(user.lastName());
             existingUser.setEmail(user.email());
@@ -123,8 +133,4 @@ class UserServiceImpl implements UserService, UserProvider {
         User newUser = userMapper.toEntity(user);
         return userRepository.save(newUser);
     }
-
-
-
-
 }
